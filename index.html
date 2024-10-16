@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tagger</title>
+    <style>
+        .container {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        textarea, select, input {
+            margin: 10px 0;
+            display: block;
+        }
+        #output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <label for="text">Inserisci il testo:</label>
+    <textarea id="text" rows="5" cols="40"></textarea>
+
+    <label for="tagSelect">Scegli un tag HTML:</label>
+    <select id="tagSelect">
+        <option value="p">p</option>
+        <option value="h1">h1</option>
+        <option value="h2">h2</option>
+        <option value="div">div</option>
+        <option value="span">span</option>
+    </select>
+
+    <label for="classInput">Inserisci className (opzionale):</label>
+    <input type="text" id="classInput" placeholder="Classe CSS...">
+
+    <button id="tagButton">Tagged</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    document.getElementById('tagButton').addEventListener('click', function() {
+        const text = document.getElementById('text').value;
+        const tag = document.getElementById('tagSelect').value;
+        const className = document.getElementById('classInput').value;
+        
+        // Crea un nuovo elemento con il tag selezionato
+        const newElement = document.createElement(tag);
+        
+        // Aggiungi il testo all'interno dell'elemento
+        newElement.textContent = text;
+        
+        // Aggiungi la classe se è stata inserita
+        if (className) {
+            newElement.className = className;
+        }
+
+        // Aggiungi l'elemento al div output
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = ''; // Pulisce il contenuto precedente
+        outputDiv.appendChild(newElement);
+    });
+</script>
+
+</body>
+</html>

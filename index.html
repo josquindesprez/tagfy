@@ -6,50 +6,86 @@
     <title>Tagger</title>
     <!-- Include Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Font Awesome via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="bg-gray-100 font-sans p-6">
+<body class="bg-neutral-50 font-sans p-6">
 
 <div class="container mx-auto">
     <div class="flex space-x-6">
         <!-- Colonna sinistra: inserimento testo e controlli -->
         <div class="w-1/2">
-            <label for="text" class="block mb-2 text-gray-700">Inserisci il testo:</label>
+            <label for="text" class="block mb-2 text-gray-900">Inserisci il testo:</label>
             <textarea id="text" rows="5" class="w-full p-2 border border-gray-300 rounded mb-4"></textarea>
 
-            <label for="tagSelect" class="block mb-2 text-gray-700">Scegli un tag HTML:</label>
+            <label for="tagSelect" class="block mb-2 text-gray-900">Scegli un tag HTML:</label>
             <select id="tagSelect" class="w-full p-2 border border-gray-300 rounded mb-4">
                 <option value="p">p</option>
                 <option value="h1">h1</option>
                 <option value="h2">h2</option>
                 <option value="div">div</option>
                 <option value="span">span</option>
+                <option value="custom">Custom</option>
             </select>
 
-            <label for="classInput" class="block mb-2 text-gray-700">Inserisci className (opzionale):</label>
-            <input type="text" id="classInput" placeholder="Classe CSS..." class="w-full p-2 border border-gray-300 rounded mb-4">
+            <div id="customTagContainer" class="hidden mb-4">
+                <label for="customTagInput" class="block mb-2 text-gray-900">Tag custom:</label>
+                <input type="text" id="customTagInput" placeholder="Tag personalizzato..." class="w-full p-2 border border-gray-300 rounded">
+            </div>
 
-            <button id="tagButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Tagged</button>
+            <label for="classInput" class="block mb-2 text-gray-900">ClassName (opzionale):</label>
+            <input type="text" id="classInput" placeholder="Classe CSS..." class="w-full p-2 border border-gray-300 rounded mb-4">
+            <div class="flex">
+                <label class="block mb-2 text-gray-900">Attributo custom (opzionale):</label>
+                <input type="text" id="attributeName" placeholder="Nome attributo..." class="w-1/2 p-2 mr-2 border border-gray-300 rounded mb-4">
+
+                <input type="text" id="attributeValue" placeholder="Valore attributo..." class="w-1/2 p-2 border border-gray-300 rounded mb-4"> 
+            </div>
+
+            <button id="tagButton" class="bg-emerald-500 text-white text-4xl px-4 py-2 rounded hover:bg-emerald-700">Tagfy</button>
         </div>
 
         <!-- Colonna destra: anteprima -->
         <div class="w-1/2">
-            <p class="text-gray-700 mb-2">Anteprima del testo formattato:</p>
-            <div id="formattedOutput" class="p-4 border border-gray-300 bg-white rounded h-full overflow-auto"></div>
+            <p class="text-gray-900 mb-2">Anteprima del testo formattato:</p>
+
+            
+            <div id="formattedOutput" class="p-4 border  border-gray-300 bg-white rounded h-full overflow-auto"></div>
+            <button id="refreshButton" class="bg-transparent text-white text-xl px-4 py-2 rounded">
+    <i class="fas fa-sync-alt text-emerald-700 animate__animated hover:animate__wobble"></i>
+</button>    
         </div>
     </div>
 </div>
 
 <script>
+    document.getElementById('tagSelect').addEventListener('change', function() {
+        const customTagContainer = document.getElementById('customTagContainer');
+        if (this.value === 'custom') {
+            customTagContainer.classList.remove('hidden');
+        } else {
+            customTagContainer.classList.add('hidden');
+        }
+    });
+
+    const textarea = document.getElementById('text');
     document.getElementById('tagButton').addEventListener('click', function() {
-        const textarea = document.getElementById('text');
         const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-        const tag = document.getElementById('tagSelect').value;
+        const tagSelect = document.getElementById('tagSelect').value;
+        const customTagInput = document.getElementById('customTagInput').value;
+        const tag = tagSelect === 'custom' ? customTagInput : tagSelect;
         const className = document.getElementById('classInput').value;
-        
-        if (selectedText) {
+        const attributeName = document.getElementById('attributeName').value;
+        const attributeValue = document.getElementById('attributeValue').value;
+
+        if (selectedText && tag) {
             let openTag = `<${tag}`;
             if (className) {
-                openTag += ` class="${className}"`;
+                openTag += ` className="${className}"`;
+            }
+            if (attributeName && attributeValue) {
+                openTag += ` ${attributeName}="${attributeValue}"`;
             }
             openTag += `>`;
             const closeTag = `</${tag}>`;
@@ -61,8 +97,12 @@
             // Aggiorna l'anteprima nel div 'formattedOutput'
             document.getElementById('formattedOutput').innerHTML = textarea.value;
         } else {
-            alert('Seleziona del testo prima di cliccare "Tagged"!');
+            alert('Seleziona del testo e inserisci un tag valido prima di cliccare "Tagged"!');
         }
+    });
+
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        document.getElementById('formattedOutput').innerHTML = textarea.value;
     });
 </script>
 

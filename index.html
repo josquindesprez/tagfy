@@ -45,6 +45,7 @@
             </div>
 
             <button id="tagButton" class="bg-emerald-500 text-white text-4xl px-4 py-2 rounded hover:bg-emerald-700">Tagfy</button>
+                        
         </div>
 
         <!-- Colonna destra: anteprima -->
@@ -54,8 +55,11 @@
             
             <div id="formattedOutput" class="p-4 border  border-gray-300 bg-white rounded h-full overflow-auto"></div>
             <button id="refreshButton" class="bg-transparent text-white text-xl px-4 py-2 rounded">
-    <i class="fas fa-sync-alt text-emerald-700 animate__animated hover:animate__wobble"></i>
-</button>    
+                <i class="fas fa-sync-alt text-emerald-700 animate__animated hover:animate__wobble"></i>
+            </button>   
+            <button id="newPage" class="bg-transparent text-white text-xl px-4 py-2 rounded">
+                <i class="fas fa-external-link-square-alt text-emerald-700 animate__animated hover:animate__wobble"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -104,7 +108,26 @@
 
     document.getElementById('refreshButton').addEventListener('click', function() {
         document.getElementById('formattedOutput').innerHTML = textarea.value;
-    });
+        });
+document.getElementById('newPage').addEventListener('click', function() {
+    // Apri una nuova scheda con il contenuto del textarea senza modifiche
+    const content = textarea.value;
+    const newWindow = window.open();
+    newWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Anteprima Codice</title>
+        </head>
+        <body>${content}</body>
+        </html>
+    `);
+    newWindow.document.close(); // Chiude lo stream di scrittura del documento
+});
+    
+        
 </script>
 
 </body>
